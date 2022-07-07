@@ -23,18 +23,19 @@ namespace DeliveryCoffeeBot.Coffee
             {
                 await client.SendTextMessageAsync(chatId, "Извините, для начала используйте команду '/coffeetime'");
             }
-            else if (ChatCoffeeParticipants.Participants[chatId].Participants.Count <= 1)
-            {
-                await client.SendTextMessageAsync(chatId, "Извините, не набралось необходимое количество участников!");
-            }
             else if (ChatCoffeeParticipants.Participants[chatId].IsUsed)
             {
                 await client.SendTextMessageAsync(chatId, "Извините, сегодня команда уже использовалась, попробуйте завтра!");
+            }
+            else if (ChatCoffeeParticipants.Participants[chatId].Participants.Count <= 1)
+            {
+                await client.SendTextMessageAsync(chatId, "Извините, не набралось необходимое количество участников!");
             }
             else
             {
                 ChatCoffeeParticipants.Participants[chatId].IsUsed = true;
                 var shuffleParticipants = ChatCoffeeParticipants.Participants[chatId].Participants.OrderBy(x => Guid.NewGuid().ToString()).ToList();
+                ChatCoffeeParticipants.Participants[chatId].Participants = new List<Participant>();
                 var pairCount = shuffleParticipants.Count / 2;
                 var winnerCount = new Random().Next(1, pairCount + 1);
                 var resultMessage = new StringBuilder();
@@ -47,7 +48,7 @@ namespace DeliveryCoffeeBot.Coffee
                     var loser = !string.IsNullOrWhiteSpace(shuffleParticipants[i * 2 + 1].UserName)
                         ? shuffleParticipants[i * 2 + 1].UserName
                         : $"tg://user?id={shuffleParticipants[i * 2 + 1].Id}";
-                    resultMessage.Append($"Получает кофе @{winner} от @{loser}\r\n");
+                    resultMessage.Append($"@{winner} получает кофе от @{loser} (жди доставку до рабочего места)\r\n");
                 }
                 await client.SendTextMessageAsync(chatId, resultMessage.ToString());
             }

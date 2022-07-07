@@ -31,9 +31,7 @@ namespace DeliveryCoffeeBot.Coffee
             }
             else
             {
-                ChatCoffeeParticipants.Participants[chatId].Participants = new List<Participant>();
-                ChatCoffeeParticipants.Participants[chatId].Date = DateTime.Now;
-                ChatCoffeeParticipants.Participants[chatId].IsUsed = false;
+                ChatCoffeeParticipants.Participants[chatId] = new CoffeeParticipants();
             }
 
             await client.SendTextMessageAsync(chatId, "Хорошо! Если ты хочешь кофе, используй команду '/wantcoffee'.");

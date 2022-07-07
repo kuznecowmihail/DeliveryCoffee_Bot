@@ -18,16 +18,22 @@ namespace DeliveryCoffeeBot.Coffee
                 && ChatCoffeeParticipants.Participants[chatId].Date.Month != DateTime.Now.Month
                 && ChatCoffeeParticipants.Participants[chatId].Date.Day != DateTime.Now.Day))
             {
-                await client.SendTextMessageAsync(chatId, "Извините, для начала используйте команду '/coffeetime'");
+                await client.SendTextMessageAsync(chatId, "Извините, для начала используйте команду '/coffeetime'", replyToMessageId: message.MessageId);
 
                 return;
             }
-            if((!string.IsNullOrEmpty(message.From.Username)
+            else if (ChatCoffeeParticipants.Participants[chatId].IsUsed)
+            {
+                await client.SendTextMessageAsync(chatId, "Извините, сегодня победители уже получили кофе, попробуйте завтра!", replyToMessageId: message.MessageId);
+
+                return;
+            }
+            else if((!string.IsNullOrEmpty(message.From.Username)
                 && ChatCoffeeParticipants.Participants[chatId].Participants.Select(t => t.UserName).Contains(message.From.Username))
                 || (!string.IsNullOrEmpty(message.From.Username)
                     && ChatCoffeeParticipants.Participants[chatId].Participants.Select(t => t.Id).Contains(message.From.Id)))
             {
-                await client.SendTextMessageAsync(chatId, "Извините, вы уже в деле!");
+                await client.SendTextMessageAsync(chatId, "Извините, вы уже в деле!", replyToMessageId: message.MessageId);
 
                 return;
             }
